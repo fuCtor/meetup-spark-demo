@@ -1,0 +1,13 @@
+.idea/
+
+dist/*
+target/
+metastore_db/
+spark-warehouse/
+checkpoint/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.lib/
+.DS_Store
