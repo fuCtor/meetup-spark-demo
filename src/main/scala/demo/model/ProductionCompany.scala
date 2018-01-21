@@ -15,7 +15,7 @@ object ProductionCompany {
   def parse(data: String): Option[Seq[ProductionCompany]] = {
     parser.parse(data).right.flatMap(_.as[Seq[ProductionCompany]]) match {
       case Right(v) => Some(v)
-      case Left(e) => throw e
+      case Left(e) => None
     }
   }
 

@@ -15,7 +15,7 @@ object FilmCollection {
   def parse(data: String): Option[FilmCollection] = {
     parser.parse(data).right.flatMap(_.as[FilmCollection]) match {
       case Right(v) => Some(v)
-      case Left(e) => throw e
+      case Left(e) => None
     }
   }
 

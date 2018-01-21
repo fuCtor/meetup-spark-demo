@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
 
-  "io.circe" %% "circe-generic" % circeVersion,
+  "io.circe" %% "circe-generic" % circeVersion excludeAll ExclusionRule(organization = "ch.qos.logback"),
   "io.circe" %% "circe-parser" % circeVersion,
 
   "org.apache.spark" %% "spark-core" % sparkVersion, //% "provided"

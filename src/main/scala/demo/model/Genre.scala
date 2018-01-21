@@ -15,7 +15,7 @@ object Genre {
   def parse(data: String): Option[Seq[Genre]] = {
     parser.parse(data).right.flatMap(_.as[Seq[Genre]]) match {
       case Right(v) => Some(v)
-      case Left(e) => throw e
+      case Left(e) => None
     }
   }
 

@@ -10,7 +10,7 @@ object DemoJob extends App {
   implicit val appContext = Context("demo_app")
 
   val rating = readCSV("data/ratings_small.csv")
-  val moviesMetadata = readCSV("data/movies_metadata.csv")
+  val moviesMetadata = readCSV("data/movies_metadata.csv").repartition(1)
 
   val df = moviesMetadata
     .withColumn("id", col("id").cast(IntegerType)).where(col("id") > 0)
@@ -23,11 +23,17 @@ object DemoJob extends App {
     toStruct(_: DataFrame, "spoken_languages", Language.udfParse)
   ).fold((x: DataFrame) => x)((a, b) => a.andThen(b))(df).cache()
 
-  val movieGenres = expandedDf
-    .select(col("id").as("movie_id"), explode(col("genres")).as("genre"))
-    .select(col("movie_id"), col("genre.*"))
+  val movieGenres = explodeSeqStruct(expandedDf, "genres")
+  val movieLanguages = explodeSeqStruct(expandedDf, "spoken_languages")
+  val movieCompanies = explodeSeqStruct(expandedDf, "production_companies")
+  val movieCountries = explodeSeqStruct(expandedDf, "production_countries")
+  val movieCollection = expandedDf.where(col("belongs_to_collection").isNotNull).select(col("id").as("movie_id"), col("belongs_to_collection.*"))
 
   movieGenres.show(10)
+  movieLanguages.show(10)
+  movieCompanies.show(10)
+  movieCountries.show(10)
+  movieCollection.show(10)
 
   appContext.stop()
 
@@ -36,5 +42,9 @@ object DemoJob extends App {
 
   def toStruct(df: DataFrame, name: String, extractor: UserDefinedFunction): DataFrame =
     df.withColumn(name, extractor(col(name)))
+
+  def explodeSeqStruct(df: DataFrame, name: String): DataFrame =
+    df.select(col("id").as("movie_id"), explode(col(name)).as("tmp")).where(col("tmp").isNotNull)
+      .select(col("movie_id"), col("tmp.*"))
 
 }

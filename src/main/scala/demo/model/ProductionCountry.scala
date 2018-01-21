@@ -15,7 +15,7 @@ object ProductionCountry {
   def parse(data: String): Option[Seq[ProductionCountry]] = {
     parser.parse(data).right.flatMap(_.as[Seq[ProductionCountry]]) match {
       case Right(v) => Some(v)
-      case Left(e) => throw e
+      case Left(e) => None
     }
   }
 

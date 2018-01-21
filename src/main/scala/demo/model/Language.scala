@@ -15,9 +15,7 @@ object Language {
   def parse(data: String): Option[Seq[Language]] = {
     parser.parse(data).right.flatMap(_.as[Seq[Language]]) match {
       case Right(v) => Some(v)
-      case Left(e) =>
-        println(data)
-        throw e
+      case Left(e) => None
     }
   }
 
