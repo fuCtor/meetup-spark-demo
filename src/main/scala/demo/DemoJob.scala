@@ -23,9 +23,11 @@ object DemoJob extends App {
     toStruct(_: DataFrame, "spoken_languages", Language.udfParse)
   ).fold((x: DataFrame) => x)((a, b) => a.andThen(b))(df).cache()
 
+  val movieGenres = expandedDf
+    .select(col("id").as("movie_id"), explode(col("genres")).as("genre"))
+    .select(col("movie_id"), col("genre.*"))
 
-  expandedDf.show(10, false)
-  expandedDf.printSchema()
+  movieGenres.show(10)
 
   appContext.stop()
 
