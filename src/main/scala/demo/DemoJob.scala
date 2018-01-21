@@ -29,11 +29,9 @@ object DemoJob extends App {
   val movieCountries = explodeSeqStruct(expandedDf, "production_countries")
   val movieCollection = expandedDf.where(col("belongs_to_collection").isNotNull).select(col("id").as("movie_id"), col("belongs_to_collection.*"))
 
-  movieGenres.show(10)
-  movieLanguages.show(10)
-  movieCompanies.show(10)
-  movieCountries.show(10)
-  movieCollection.show(10)
+  val genreByCountry = movieGenres.withColumnRenamed("name", "genre").join(movieCountries.withColumnRenamed("name", "country"), movieCountries("movie_id") === movieGenres("movie_id"))
+
+  genreByCountry.select("genre", "country").distinct().orderBy("country") show 10
 
   appContext.stop()
 
