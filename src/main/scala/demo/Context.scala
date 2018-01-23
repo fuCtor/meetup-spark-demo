@@ -1,15 +1,19 @@
 package demo
 
-import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
-class Context(appName: String) extends LazyLogging {
+class Context(appName: String) {
   val sparkConfig: SparkConf = {
     val conf = new SparkConf().setAppName(appName)
-    Option(System.getenv("SPARK_MASTER_URL")) match { // https://github.com/big-data-europe/docker-spark
+    val masteredConf = Option(System.getenv("SPARK_MASTER_URL")) match { // https://github.com/big-data-europe/docker-spark
       case Some(_) => conf
       case None => conf.setMaster("local[*]")
+    }
+
+    Option(System.getenv("NEO4J_URL")) match {
+      case Some(url) => masteredConf.set("spark.neo4j.bolt.url", url)
+      case None => masteredConf
     }
   }
 
@@ -27,7 +31,6 @@ class Context(appName: String) extends LazyLogging {
   lazy val sql = spark.sqlContext
 
   def stop(): Unit = {
-    logger.info("Stop Spark")
     sc.stop()
   }
 }
