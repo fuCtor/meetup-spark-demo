@@ -4,11 +4,10 @@ import org.apache.commons.lang3.StringUtils
 
 object Normalizer {
 
-  private val rgxNone = "\\:\\s?None".r
-  private val rgxComa = "([\\s\\{\\}])'([\\w\\d\\s.\\-\\+\\(\\)\\/\\&]+)'([\\,\\{\\}\\:])".r
-  private val rgxComa2 = "\\:\\s'([\\w\\s\\d\\&\\-\\.\\,]*)?\\\"([\\w\\s]+)\\\"([\\w\\s\\d\\&\\-\\.\\,]*)'".r
-  private val rgxComa3 = ":\\s\"(.*)(?:''|\")(.*)(?:''|\")(.*)\"".r
-  private val rgxNonUTF = "\\\\x[a-f\\d]+".r
+  private val rgxNone = """\:\s?None""".r
+  private val rgxComa = """([\s\{\}])'([\w\d\s.\-\+\(\)\/\&]+)'([\,\{\}\:])""".r
+  private val rgxComa2 = """\:\s'([\w\s\d\&\-\.\,]*)?\"([\w\s]+)\"([\w\s\d\&\-\.\,]*)'""".r
+  private val rgxNonUTF = """\\x[a-f\d]+""".r
 
   def norm(string: String): String = {
     val rgxReplacer = Seq(
